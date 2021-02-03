@@ -1,0 +1,16 @@
+FROM ubuntu:latest
+
+ARG PROTOBUF_VERSION=3.14.0
+
+RUN apt-get update && \
+    apt-get install -y wget unzip
+
+WORKDIR /opt/protoc
+RUN wget -O protoc.zip https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VERSION}/protoc-${PROTOBUF_VERSION}-linux-x86_64.zip && \
+    unzip protoc.zip && \
+    rm protoc.zip
+
+CMD /opt/protoc/bin/protoc \
+    -I /opt/pb_sources \
+    --python_out /opt/pb_generated \
+    $(find /opt/pb_sources/ -name '*.proto')
